@@ -14,6 +14,9 @@ const db = require('../../data/dbConfig');
  * [{"project_id":1,"project_name":"bar","project_description":null,"project_completed":false}]
  */
 
+function getProjects() {
+    return db('projects');
+}
 function getProjectById(project_id) {
     return db('projects')
         .where('project_id', project_id)
@@ -30,4 +33,4 @@ function postProject(project) {
 }
 
 //export the module
-module.exports = {getProjectById, postProject}
+module.exports = {getProjectById, postProject, getProjects}

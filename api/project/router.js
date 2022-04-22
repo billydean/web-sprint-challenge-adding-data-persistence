@@ -16,6 +16,14 @@ const Project = require('./model');
  * [{"project_id":1,"project_name":"bar","project_description":null,"project_completed":false}]
  */
 
+router.get('/', (req,res,next)=>{
+    Project.getProjects()
+        .then(projects => {
+            res.json(projects);
+        })
+        .catch(next);
+})
+
 router.get('/:project_id', (req,res,next)=>{
     Project.getProjectById(req.params.project_id)
         .then(project => {
