@@ -2,7 +2,13 @@
 // need express router and the model for db access handlers
 const router = require('express').Router();
 const Project = require('./model');
-
+const booleanize = (integer) => {
+    if (integer === 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 /**
  * Required Endpoints
@@ -15,6 +21,7 @@ const Project = require('./model');
  * [GET] "/"
  * [{"project_id":1,"project_name":"bar","project_description":null,"project_completed":false}]
  */
+
 
 router.get('/', (req,res,next)=>{
     Project.getProjects()
@@ -35,7 +42,11 @@ router.get('/:project_id', (req,res,next)=>{
 router.post('/', (req,res,next) => {
     Project.postProject(req.body)
         .then(project => {
-            res.status(201).json(project);
+            res.status(201).json({
+                project_completed: booleanize(project.project_completed),
+                project_description: project.project_description,
+                project_name: project.project_name
+            });
         })
         .catch(next);
 })

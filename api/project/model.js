@@ -1,7 +1,14 @@
 // build your `Project` model here
 // gotta access that database somehow
 const db = require('../../data/dbConfig');
-
+//handler for booleans. will this work??
+const booleanize = (integer) => {
+    if (integer === 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
 /**
  * Required Endpoints
  * 
@@ -14,16 +21,25 @@ const db = require('../../data/dbConfig');
  * [{"project_id":1,"project_name":"bar","project_description":null,"project_completed":false}]
  */
 
-function getProjects() {
-    return db('projects');
+async function getProjects() {
+    const rawProjects = await  db('projects');
+    rawProjects.forEach(project => {
+        project.project_completed = booleanize(project.project_completed);
+    });
+    return rawProjects;
 }
-function getProjectById(project_id) {
-    return db('projects')
+async function getProjectById(project_id) {
+    // access first, with "completed" as an integer, and then "booleanize" it
+    const raw = await db('projects')
         .where('project_id', project_id)
         .first();
+    raw.project_completed = booleanize(raw.project_completed);
+    return raw;
 }
 
 function postProject(project) {
+    // const newProject = await db('projects').insert(project);
+    // return getProjectById(project[project_id]);
    return db('projects').insert(project)
     .then(([project_id]) => {
         return db('projects')

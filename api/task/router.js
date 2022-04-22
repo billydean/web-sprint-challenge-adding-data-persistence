@@ -2,7 +2,13 @@
 // need express router and the model for db access handlers
 const router = require('express').Router();
 const Task = require('./model');
-
+const booleanize = (integer) => {
+    if (integer === 0) {
+        return false;
+    } else {
+        return true;
+    }
+}
 
 router.get('/:task_id', (req,res,next)=>{
     Task.getTaskById(req.params.task_id)
@@ -24,7 +30,11 @@ router.get('/', (req,res,next)=>{
 router.post('/', (req,res,next) => {
     Task.postTask(req.body)
         .then(task => {
-            res.status(201).json(task);
+            res.status(201).json({
+                task_description: task.task_description,
+                task_notes: task.task_notes,
+                task_completed: booleanize(task.task_completed)
+            });
         })
         .catch(next);
 })
